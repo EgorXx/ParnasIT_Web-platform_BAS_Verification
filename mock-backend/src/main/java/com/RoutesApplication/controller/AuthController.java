@@ -21,16 +21,9 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(
+    public ResponseEntity<AuthResponse> register(
             @RequestBody RegisterRequest request
     ) {
-
-        if (userRepository.findByEmail(request.email()).isPresent()) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body("Email already exists");
-        }
 
 
         User user = new User();
@@ -54,21 +47,12 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request
     ) {
 
         User user = userRepository.findByEmail(request.email())
                 .orElse(null);
-
-
-        if (user == null ||
-                !user.getPassword().equals(request.password())) {
-
-            return ResponseEntity
-                    .status(401)
-                    .body("Invalid credentials");
-        }
 
 
         return ResponseEntity.ok(

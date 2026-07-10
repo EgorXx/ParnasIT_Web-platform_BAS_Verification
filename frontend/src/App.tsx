@@ -10,11 +10,16 @@ import ZonePage from "./pages/ZonePage";
 import ZoneCreatePage from "./pages/ZoneCreatePage";
 import ZoneViewPage from "./pages/ZoneViewPage";
 import AdminRoute from "./components/AdminRoute";
+import HomePage from "./pages/HomePage";
+import Layout from "./Layout";
 
 
 export default function App() {
   return (
     <Routes>
+
+
+      {/* Страницы без Header */}
 
       <Route
         path="/login"
@@ -27,83 +32,80 @@ export default function App() {
       />
 
 
-      <Route
-        path="/route"
-        element={
-          <ProtectedRoute>
-            <RoutePage />
-          </ProtectedRoute>
-        }
-      />
 
+      {/* Все страницы с Header */}
 
-      <Route
-        path="/list"
-        element={
-          <ProtectedRoute>
-            <ListPage />
-          </ProtectedRoute>
-        }
-      />
-
-
-      <Route
-        path="/route/:id"
-        element={
-          <ProtectedRoute>
-            <RouteViewPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<Layout />}>
 
         <Route
-
-        path="/zones"
-
-        element={
-
-          <AdminRoute>
-
-            <ZonePage />
-
-          </AdminRoute>
-
-        }
-
+          path="/"
+          element={<HomePage />}
         />
+
 
         <Route
-
-        path="/zones/create"
-
-        element={
-
-          <AdminRoute>
-
-            <ZoneCreatePage />
-
-          </AdminRoute>
-
-        }
-
+          path="/route"
+          element={
+            <ProtectedRoute>
+              <RoutePage />
+            </ProtectedRoute>
+          }
         />
+
 
         <Route
-
-        path="/zones/:id"
-
-        element={
-
-          <AdminRoute>
-
-            <ZoneViewPage />
-
-          </AdminRoute>
-
-        }
-
+          path="/list"
+          element={
+            <ProtectedRoute>
+              <ListPage />
+            </ProtectedRoute>
+          }
         />
 
-</Routes>
-);
+
+        <Route
+          path="/route/:id"
+          element={
+            <ProtectedRoute>
+              <RouteViewPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/zones"
+          element={
+            <AdminRoute>
+              <ZonePage />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/zones/create"
+          element={
+            <AdminRoute>
+              <ZoneCreatePage />
+            </AdminRoute>
+          }
+        />
+
+
+        <Route
+          path="/zones/:id"
+          element={
+            <AdminRoute>
+              <ZoneViewPage />
+            </AdminRoute>
+          }
+        />
+
+      </Route>
+
+
+    </Routes>
+  );
 }

@@ -1,6 +1,5 @@
-package com.RoutesApplication.repository;
+package com.RoutesApplication.user;
 
-import com.RoutesApplication.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

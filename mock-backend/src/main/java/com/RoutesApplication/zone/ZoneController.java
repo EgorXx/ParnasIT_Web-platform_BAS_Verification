@@ -1,7 +1,4 @@
-package com.RoutesApplication.controller;
-
-import com.RoutesApplication.model.Zone;
-import com.RoutesApplication.repository.ZoneRepository;
+package com.RoutesApplication.zone;
 
 import lombok.RequiredArgsConstructor;
 

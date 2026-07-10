@@ -1,4 +1,4 @@
-package com.RoutesApplication.model;
+package com.RoutesApplication.route;
 
 import lombok.Builder;
 import lombok.Data;

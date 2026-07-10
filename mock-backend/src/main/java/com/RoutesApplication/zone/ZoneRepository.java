@@ -1,6 +1,5 @@
-package com.RoutesApplication.repository;
+package com.RoutesApplication.zone;
 
-import com.RoutesApplication.model.Zone;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

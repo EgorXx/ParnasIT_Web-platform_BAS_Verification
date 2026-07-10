@@ -123,7 +123,7 @@ export default function ZoneViewPage() {
         style={{
           position: "absolute",
           top: 20,
-          left: 20,
+          left: 50,
           zIndex: 1000,
           background: "white",
           padding: 20,

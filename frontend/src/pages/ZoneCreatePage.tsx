@@ -347,7 +347,7 @@ const coordinates = [
 
           top: 20,
 
-          left: 20,
+          left: 50,
 
           zIndex: 1000,
 

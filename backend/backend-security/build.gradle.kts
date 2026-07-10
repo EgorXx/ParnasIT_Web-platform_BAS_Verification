@@ -1,0 +1,15 @@
+plugins {
+    id("io.freefair.lombok")
+}
+
+dependencies {
+    implementation(project(":backend-core"))
+    implementation(project(":backend-persistence"))
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+    testImplementation("org.springframework.security:spring-security-test")
+}

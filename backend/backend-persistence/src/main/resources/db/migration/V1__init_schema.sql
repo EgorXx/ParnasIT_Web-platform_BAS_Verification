@@ -1,0 +1,2 @@
+-- Placeholder: initial schema will go here
+-- See V1__init_schema.sql for the full DDL

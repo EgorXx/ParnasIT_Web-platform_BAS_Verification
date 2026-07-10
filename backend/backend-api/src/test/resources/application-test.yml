@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16:///bas_verification_test
+  flyway:
+    locations: classpath:db/migration
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+
+app:
+  jwt:
+    secret: test-secret-key-for-integration-tests
+    access-token-expiration: 5m
+    refresh-token-expiration: 1h

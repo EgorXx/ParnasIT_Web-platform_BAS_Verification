@@ -5,6 +5,7 @@ import ListPage from "./pages/ListPage";
 import RouteViewPage from "./pages/RouteViewPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 export default function App() {
@@ -21,19 +22,34 @@ export default function App() {
         element={<RegisterPage />}
       />
 
+
       <Route
         path="/route"
-        element={<RoutePage />}
+        element={
+          <ProtectedRoute>
+            <RoutePage />
+          </ProtectedRoute>
+        }
       />
+
 
       <Route
         path="/list"
-        element={<ListPage />}
+        element={
+          <ProtectedRoute>
+            <ListPage />
+          </ProtectedRoute>
+        }
       />
+
 
       <Route
         path="/route/:id"
-        element={<RouteViewPage />}
+        element={
+          <ProtectedRoute>
+            <RouteViewPage />
+          </ProtectedRoute>
+        }
       />
 
     </Routes>

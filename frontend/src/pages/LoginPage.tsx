@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   const login = async () => {
     try {
@@ -23,14 +25,32 @@ export default function LoginPage() {
         }
       );
 
+
       if (!response.ok) {
         throw new Error("Ошибка входа");
       }
 
+
       const data = await response.json();
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
+
+      Cookies.set(
+        "token",
+        data.token,
+        {
+          expires: 7,
+        }
+      );
+
+
+      Cookies.set(
+        "role",
+        data.role,
+        {
+          expires: 7,
+        }
+      );
+
 
       navigate("/list");
 
@@ -59,7 +79,9 @@ export default function LoginPage() {
           width: 320,
         }}
       >
+
         <h2>Вход</h2>
+
 
         <input
           placeholder="Email"
@@ -71,6 +93,7 @@ export default function LoginPage() {
             padding: 10,
           }}
         />
+
 
         <input
           placeholder="Пароль"
@@ -84,6 +107,7 @@ export default function LoginPage() {
           }}
         />
 
+
         <button
           onClick={login}
           style={{
@@ -93,11 +117,11 @@ export default function LoginPage() {
             color: "#fff",
             border: "none",
             borderRadius: 8,
-            cursor: "pointer",
           }}
         >
           Войти
         </button>
+
 
         <button
           onClick={() => navigate("/register")}
@@ -109,11 +133,11 @@ export default function LoginPage() {
             color: "#d21951",
             border: "1px solid #d21951",
             borderRadius: 8,
-            cursor: "pointer",
           }}
         >
           Регистрация
         </button>
+
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -35,8 +36,22 @@ export default function RegisterPage() {
       const data = await response.json();
 
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
+      Cookies.set(
+        "token",
+        data.token,
+        {
+          expires: 7,
+        }
+      );
+
+
+      Cookies.set(
+        "role",
+        data.role,
+        {
+          expires: 7,
+        }
+      );
 
 
       navigate("/list");

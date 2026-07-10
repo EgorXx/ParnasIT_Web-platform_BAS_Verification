@@ -1,6 +1,5 @@
 plugins {
     id("org.springframework.boot")
-    id("io.freefair.lombok")
 }
 
 dependencies {

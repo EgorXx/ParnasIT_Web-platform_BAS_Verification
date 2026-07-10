@@ -2,7 +2,6 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
-    id("io.freefair.lombok") version "8.12" apply false
 }
 
 allprojects {
@@ -25,6 +24,11 @@ subprojects {
     }
 
     dependencies {
+        compileOnly("org.projectlombok:lombok:1.18.46")
+        annotationProcessor("org.projectlombok:lombok:1.18.46")
+        testCompileOnly("org.projectlombok:lombok:1.18.46")
+        testAnnotationProcessor("org.projectlombok:lombok:1.18.46")
+
         testImplementation(platform("org.junit:junit-bom:5.11.0"))
         testImplementation("org.junit.jupiter:junit-jupiter")
         testImplementation("org.mockito:mockito-core:5.14.0")

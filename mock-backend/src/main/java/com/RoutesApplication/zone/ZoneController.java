@@ -51,47 +51,26 @@ public class ZoneController {
 
 
     /**
-     * PUT /api/zones/{id}
-     * Обновление зоны
+
+     * GET /api/zones/{id}
+
+     * Получить зону по id
+
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Zone> update(
-            @PathVariable Long id,
-            @RequestBody Zone updatedZone
+
+    @GetMapping("/{id}")
+
+    public ResponseEntity<Zone> getById(
+
+            @PathVariable Long id
+
     ) {
 
         return repository.findById(id)
-                .map(existing -> {
 
-                    existing.setName(updatedZone.getName());
-                    existing.setGeometry(updatedZone.getGeometry());
+                .map(ResponseEntity::ok)
 
-                    return ResponseEntity.ok(existing);
-
-                })
-                .orElseGet(
-                        () -> ResponseEntity.notFound().build()
-                );
-
-    }
-
-
-    /**
-     * DELETE /api/zones/{id}
-     * Удаление зоны
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable Long id
-    ) {
-
-        boolean deleted = repository.deleteById(id);
-
-        if (!deleted) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.noContent().build();
+                .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 

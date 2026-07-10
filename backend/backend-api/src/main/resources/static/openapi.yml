@@ -158,56 +158,6 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
 
-  /api/zones/{id}:
-    put:
-      tags: [Zones]
-      summary: Изменить зону
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateZoneRequest"
-      responses:
-        "200":
-          description: Зона обновлена
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ZoneResponse"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          description: Зона не найдена
-    delete:
-      tags: [Zones]
-      summary: Удалить зону
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "204":
-          description: Зона удалена
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          description: Зона не найдена
-
   /api/admin/routes/pending:
     get:
       tags: [Admin]

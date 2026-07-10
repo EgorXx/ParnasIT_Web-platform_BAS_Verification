@@ -1,9 +1,5 @@
-package com.RoutesApplication.controller;
+package com.RoutesApplication.route;
 
-
-import com.RoutesApplication.model.Route;
-import com.RoutesApplication.model.RouteSummary;
-import com.RoutesApplication.repository.RouteRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,5 +1,6 @@
-package com.RoutesApplication.model;
+package com.RoutesApplication.route;
 
+import com.RoutesApplication.module.Point;
 import lombok.Builder;
 import lombok.Data;
 

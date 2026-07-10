@@ -1,4 +1,4 @@
-package com.RoutesApplication.model;
+package com.RoutesApplication.module;
 
 public record Point(
         double lat,

@@ -1,6 +1,5 @@
-package com.RoutesApplication.repository;
+package com.RoutesApplication.route;
 
-import com.RoutesApplication.model.Route;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

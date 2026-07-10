@@ -1,160 +1,105 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   MapContainer,
-  Marker,
-  Polyline,
   TileLayer,
+  Polygon,
 } from "react-leaflet";
-import L from "leaflet";
 
 type Point = {
   lat: number;
   lng: number;
 };
 
-type Route = {
-  id: number;
+type Zone = {
   name: string;
-  points: Point[];
+  coordinates: Point[];
 };
 
-const markerIcon = new L.Icon({
-  iconUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-export default function RouteViewPage() {
-    const navigate = useNavigate();
+export default function ZoneViewPage() {
   const { id } = useParams();
 
-  const [route, setRoute] = useState<Route | null>(null);
+  const [zone, setZone] = useState<Zone | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRoute = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/routes/${id}`
-        );
+    loadZone();
+  }, []);
 
-        if (!response.ok) {
-          throw new Error(
-            `Ошибка загрузки маршрута: ${response.status}`
-          );
-        }
+  const loadZone = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/zones/${id}`
+      );
 
-        const data: Route = await response.json();
-
-        setRoute(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error("Ошибка загрузки");
       }
-    };
 
-    if (id) {
-      fetchRoute();
+      const data: Zone = await response.json();
+
+      setZone(data);
+    } catch (error) {
+      console.error(error);
+      alert("Не удалось загрузить зону");
+    } finally {
+      setLoading(false);
     }
-  }, [id]);
-
-  const linePositions = useMemo(
-    () =>
-      route?.points.map(
-        (point) =>
-          [
-            point.lat,
-            point.lng,
-          ] as [number, number]
-      ) ?? [],
-    [route]
-  );
-
+  };
 
   if (loading) {
     return <div>Загрузка...</div>;
   }
 
-
-  if (!route) {
-    return <div>Маршрут не найден</div>;
+  if (!zone) {
+    return <div>Зона не найдена</div>;
   }
 
-
-return (
-  <div
-    style={{
-      width: "100vw",
-      height: "100vh",
-      position: "relative",
-    }}
-  >
-    <MapContainer
-      center={
-        linePositions.length > 0
-          ? linePositions[0]
-          : [55.7558, 37.6173]
-      }
-      zoom={10}
+  return (
+    <div
       style={{
-        width: "100%",
-        height: "100%",
+        width: "100vw",
+        height: "100vh",
+        position: "relative",
       }}
     >
-      <TileLayer
-        attribution="© OpenStreetMap contributors"
-        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-
-      {linePositions.length > 1 && (
-        <Polyline
-          positions={linePositions}
-          color="black"
-          weight={3}
+      <MapContainer
+        center={[
+          zone.coordinates[0].lat,
+          zone.coordinates[0].lng,
+        ]}
+        zoom={10}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <TileLayer
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="© OpenStreetMap"
         />
-      )}
 
-      {route.points.map((point, index) => (
-        <Marker
-          key={index}
-          position={[
+        <Polygon
+          positions={zone.coordinates.map((point) => [
             point.lat,
             point.lng,
-          ]}
-          icon={markerIcon}
+          ])}
         />
-      ))}
-    </MapContainer>
+      </MapContainer>
 
-<button
-  onClick={() => navigate("/list")}
-  style={{
-    position: "absolute",
-    bottom: "20px",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    zIndex: 1000,
-    padding: "12px 24px",
-    borderRadius: 8,
-    border: "1px solid #d21951",
-    background: "#fff",
-    color: "#d21951",
-    cursor: "pointer",
-    fontSize: "16px",
-  }}
->
-  К списку
-</button>
-  </div>
-);
+      <div
+        style={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+          zIndex: 1000,
+          background: "#fff",
+          padding: 20,
+          borderRadius: 10,
+        }}
+      >
+        <h3>{zone.name}</h3>
+      </div>
+    </div>
+  );
 }

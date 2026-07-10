@@ -6,6 +6,10 @@ import RouteViewPage from "./pages/RouteViewPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ZonePage from "./pages/ZonePage";
+import ZoneCreatePage from "./pages/ZoneCreatePage";
+import ZoneViewPage from "./pages/ZoneViewPage";
+import AdminRoute from "./components/AdminRoute";
 
 
 export default function App() {
@@ -52,6 +56,54 @@ export default function App() {
         }
       />
 
-    </Routes>
-  );
+        <Route
+
+        path="/zones"
+
+        element={
+
+          <AdminRoute>
+
+            <ZonePage />
+
+          </AdminRoute>
+
+        }
+
+        />
+
+        <Route
+
+        path="/zones/create"
+
+        element={
+
+          <AdminRoute>
+
+            <ZoneCreatePage />
+
+          </AdminRoute>
+
+        }
+
+        />
+
+        <Route
+
+        path="/zones/:id"
+
+        element={
+
+          <AdminRoute>
+
+            <ZoneViewPage />
+
+          </AdminRoute>
+
+        }
+
+        />
+
+</Routes>
+);
 }

@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/openapi.yml").hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/openapi.yml").permitAll()
                         .requestMatchers("/api/admin/**", "/api/zones/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/routes/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/routes/**").hasAnyRole("USER", "ADMIN")
@@ -40,12 +40,14 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
                             response.getWriter().write(
                                     "{\"status\":401,\"message\":\"Неавторизован или токен истёк\"}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
                             response.getWriter().write(
                                     "{\"status\":403,\"message\":\"Недостаточно прав\"}");
                         })

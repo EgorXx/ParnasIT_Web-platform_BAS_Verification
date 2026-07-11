@@ -2,7 +2,7 @@ package com.parnasit.bas.verification.core.service;
 
 import com.parnasit.bas.verification.persistence.entity.RoutePoint;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -27,20 +26,20 @@ class AutoCheckServiceTest {
     private EntityManager entityManager;
 
     @Mock
-    private TypedQuery<Long> typedQuery;
+    private Query query;
 
     private AutoCheckService autoCheckService;
 
     @BeforeEach
     void setUp() {
         autoCheckService = new AutoCheckService(entityManager);
-        lenient().when(entityManager.createQuery(anyString(), eq(Long.class))).thenReturn(typedQuery);
-        lenient().when(typedQuery.setParameter(anyString(), any())).thenReturn(typedQuery);
+        lenient().when(entityManager.createNativeQuery(anyString())).thenReturn(query);
+        lenient().when(query.setParameter(anyString(), any())).thenReturn(query);
     }
 
     @Test
     void allPointsAndLineInsideOneZone_shouldApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(1L);
+        when(query.getSingleResult()).thenReturn(1L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.63));
 
@@ -49,7 +48,7 @@ class AutoCheckServiceTest {
 
     @Test
     void pointsInDifferentZones_shouldNotApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(0L);
+        when(query.getSingleResult()).thenReturn(0L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.80, 37.70));
 
@@ -58,7 +57,7 @@ class AutoCheckServiceTest {
 
     @Test
     void pointsInsideButLineOutside_shouldNotApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(0L);
+        when(query.getSingleResult()).thenReturn(0L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.70));
 
@@ -67,7 +66,7 @@ class AutoCheckServiceTest {
 
     @Test
     void onePointOutside_shouldNotApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(0L);
+        when(query.getSingleResult()).thenReturn(0L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 56.00, 37.00));
 
@@ -76,7 +75,7 @@ class AutoCheckServiceTest {
 
     @Test
     void allPointsOutside_shouldNotApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(0L);
+        when(query.getSingleResult()).thenReturn(0L);
 
         boolean result = autoCheckService.check(createPoints(56.00, 38.00, 56.01, 38.01));
 
@@ -85,7 +84,7 @@ class AutoCheckServiceTest {
 
     @Test
     void pointOnBoundary_shouldApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(1L);
+        when(query.getSingleResult()).thenReturn(1L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.63));
 
@@ -94,7 +93,7 @@ class AutoCheckServiceTest {
 
     @Test
     void lineOnBoundary_shouldApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(1L);
+        when(query.getSingleResult()).thenReturn(1L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.63));
 
@@ -103,7 +102,7 @@ class AutoCheckServiceTest {
 
     @Test
     void noZonesInSystem_shouldNotApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(0L);
+        when(query.getSingleResult()).thenReturn(0L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.63));
 
@@ -112,7 +111,7 @@ class AutoCheckServiceTest {
 
     @Test
     void routeInsideOneOfSeveralZones_shouldApprove() {
-        when(typedQuery.getSingleResult()).thenReturn(1L);
+        when(query.getSingleResult()).thenReturn(1L);
 
         boolean result = autoCheckService.check(createPoints(55.75, 37.62, 55.76, 37.63));
 

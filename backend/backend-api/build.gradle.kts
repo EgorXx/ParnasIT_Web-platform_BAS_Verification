@@ -9,6 +9,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.hibernate.orm:hibernate-spatial:6.6.0.Final")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

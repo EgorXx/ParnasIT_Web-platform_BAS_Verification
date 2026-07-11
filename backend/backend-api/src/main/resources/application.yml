@@ -2,29 +2,31 @@ spring:
   application:
     name: bas-verification
 
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/bas_verification
-#    username: ${DB_USER:bas_user}
-#    password: ${DB_PASSWORD:bas_pass}
-#    driver-class-name: org.postgresql.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: validate
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
-#    show-sql: false
-#    open-in-view: false
-#  flyway:
-#    enabled: true
-#    locations: classpath:db/migration
-#    baseline-on-migrate: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bas_verification
+    username: ${DB_USER:bas_user}
+    password: ${DB_PASSWORD:bas_pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    show-sql: false
+    open-in-view: false
+  flyway:
+    enabled: true
 
-#app:
-#  jwt:
-#    secret: ${JWT_SECRET:change-me-in-production-at-least-256-bits}
-#    access-token-expiration: 15m
-#    refresh-token-expiration: 7d
+app:
+  admin:
+    name: ${ADMIN_NAME:Admin}
+    email: ${ADMIN_EMAIL:admin@bas.ru}
+    password: ${ADMIN_PASSWORD:admin}
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-at-least-256-bits}
+    access-token-expiration: 15m
+    refresh-token-expiration: 7d
 
 server:
   port: ${SERVER_PORT:8080}

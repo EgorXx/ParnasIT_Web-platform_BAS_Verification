@@ -67,4 +67,31 @@ public class RouteService {
         }
         return route;
     }
+
+    @Transactional(readOnly = true)
+    public List<Route> getPendingRoutes() {
+        return routeRepository.findByAutoCheckResultFalse();
+    }
+
+    @Transactional
+    public Route approveRoute(UUID routeId) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new EntityNotFoundException("Маршрут не найден"));
+        if (route.getStatus() != RouteStatus.SUBMITTED) {
+            throw new IllegalArgumentException("Маршрут уже обработан");
+        }
+        route.setStatus(RouteStatus.APPROVED);
+        return routeRepository.save(route);
+    }
+
+    @Transactional
+    public Route rejectRoute(UUID routeId) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new EntityNotFoundException("Маршрут не найден"));
+        if (route.getStatus() != RouteStatus.SUBMITTED) {
+            throw new IllegalArgumentException("Маршрут уже обработан");
+        }
+        route.setStatus(RouteStatus.REJECTED);
+        return routeRepository.save(route);
+    }
 }

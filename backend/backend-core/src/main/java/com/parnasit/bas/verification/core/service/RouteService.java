@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,12 +28,14 @@ public class RouteService {
     @Transactional
     public Route createRoute(UUID userId, String name, List<PointSpec> points) {
         User user = userRepository.getReferenceById(userId);
+        user.getFullName();
 
         Route route = new Route();
         route.setUser(user);
         route.setName(name);
         route.setStatus(RouteStatus.SUBMITTED);
         route.setAutoCheckResult(false);
+        route.setCreatedAt(Instant.now());
 
         List<RoutePoint> routePoints = new ArrayList<>();
         int index = 0;

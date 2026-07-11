@@ -1,4 +1,4 @@
-package com.parnasit.bas.verification.api;
+package com.parnasit.bas.verification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

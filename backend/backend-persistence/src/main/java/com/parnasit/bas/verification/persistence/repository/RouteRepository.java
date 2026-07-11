@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface RouteRepository extends JpaRepository<Route, UUID> {
 
-    @EntityGraph(attributePaths = {"points"})
+    @EntityGraph(attributePaths = {"points", "user"})
     List<Route> findByUserId(UUID userId);
 
     @EntityGraph(attributePaths = {"points", "user"})

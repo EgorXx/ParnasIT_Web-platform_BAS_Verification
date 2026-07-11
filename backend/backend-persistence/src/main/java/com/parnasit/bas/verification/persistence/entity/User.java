@@ -4,6 +4,8 @@ import com.parnasit.bas.verification.persistence.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -31,5 +33,6 @@ public class User {
     private UserRole role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Instant createdAt;
 }

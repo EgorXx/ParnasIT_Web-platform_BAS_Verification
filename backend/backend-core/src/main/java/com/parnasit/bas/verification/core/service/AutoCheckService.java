@@ -27,13 +27,12 @@ public class AutoCheckService {
 
         LineString line = buildLine(points);
 
-        Long count = entityManager.createQuery(
-                        "SELECT COUNT(vz) FROM VerificationZone vz WHERE covers(vz.geometry, :line) = true",
-                        Long.class)
-                .setParameter("line", line)
+        Number count = (Number) entityManager.createNativeQuery(
+                        "SELECT COUNT(*) FROM verification_zones vz WHERE ST_Covers(vz.geometry, ST_GeomFromText(:wkt, 4326))")
+                .setParameter("wkt", line.toText())
                 .getSingleResult();
 
-        return count > 0;
+        return count.longValue() > 0;
     }
 
     private LineString buildLine(List<RoutePoint> points) {

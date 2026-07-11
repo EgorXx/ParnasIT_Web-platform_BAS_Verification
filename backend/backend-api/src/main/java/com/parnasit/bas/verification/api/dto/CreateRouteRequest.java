@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record CreateRouteRequest(
-        @NotBlank String name,
-        @Valid @Size(min = 2, message = "Route must have at least 2 points")
+        @NotBlank(message = "Название маршрута обязательно") String name,
+        @Valid @Size(min = 2, message = "Маршрут должен содержать минимум 2 точки")
         List<Coordinate> points
 ) {}

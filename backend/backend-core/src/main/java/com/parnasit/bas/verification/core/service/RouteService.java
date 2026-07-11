@@ -22,6 +22,7 @@ public class RouteService {
 
     private final RouteRepository routeRepository;
     private final UserRepository userRepository;
+    private final AutoCheckService autoCheckService;
 
     @Transactional
     public Route createRoute(UUID userId, String name, List<PointSpec> points) {
@@ -44,6 +45,10 @@ public class RouteService {
             routePoints.add(rp);
         }
         route.setPoints(routePoints);
+
+        boolean passed = autoCheckService.check(route.getPoints());
+        route.setAutoCheckResult(passed);
+        route.setStatus(passed ? RouteStatus.APPROVED : RouteStatus.SUBMITTED);
 
         return routeRepository.save(route);
     }

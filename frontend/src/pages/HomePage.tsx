@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
-
 export default function HomePage() {
-  const navigate = useNavigate();
 
   return (
     <div
@@ -67,34 +63,6 @@ export default function HomePage() {
   зарегистрированным пользователям после входа в систему.
 </p>
 
-
-          <div
-            style={{
-              display: "flex",
-              gap: 15,
-              marginTop: 30,
-              flexWrap: "wrap",
-            }}
-          >
-
-            <button
-              onClick={() => navigate("/list")}
-              style={mainButton}
-            >
-              Маршруты
-            </button>
-
-
-            <button
-              onClick={() => navigate("/zones")}
-              style={mainButton}
-            >
-              Зоны
-            </button>
-
-
-          </div>
-
         </div>
 
       </main>
@@ -102,14 +70,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-
-const mainButton = {
-  padding: "14px 25px",
-  background: "#d21951",
-  color: "#fff",
-  border: "none",
-  borderRadius: 8,
-  cursor: "pointer",
-  fontSize: 16,
-};

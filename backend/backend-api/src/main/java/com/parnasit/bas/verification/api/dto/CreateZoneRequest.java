@@ -6,6 +6,6 @@ import java.util.List;
 
 public record CreateZoneRequest(
         @NotBlank(message = "Название зоны обязательно") String name,
-        @Size(min = 3, message = "Полигон должен содержать минимум 3 координаты")
+        @Size(min = 4, message = "Полигон должен содержать минимум 4 координаты")
         List<Coordinate> coordinates
 ) {}

@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
-import AccessDeniedPage from "../pages/AccessDeniedPage";
+import AccessDeniedPage from "../pages/auth/AccessDeniedPage";
 
 
 export default function AdminRoute({

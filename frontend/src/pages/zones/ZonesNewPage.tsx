@@ -15,6 +15,13 @@ type Point = {
   lng: number;
 };
 
+const getCookie = (name: string) => {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+};
+
 
 const markerIcon = new L.Icon({
   iconUrl:
@@ -152,7 +159,7 @@ const coordinates = [
       );
 
 
-
+      const token = getCookie("token");
       const response = await fetch(
         "http://localhost:8080/api/zones",
         {
@@ -162,7 +169,7 @@ const coordinates = [
           headers: {
 
             "Content-Type": "application/json",
-
+            Authorization: `Bearer ${decodeURIComponent(token ?? "")}`
           },
 
 
@@ -200,7 +207,7 @@ const coordinates = [
 
 
 
-      navigate("/zones");
+      navigate("/admin/zones");
 
 
     } catch(error) {

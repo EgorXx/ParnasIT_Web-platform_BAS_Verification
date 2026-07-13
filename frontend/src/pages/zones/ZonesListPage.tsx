@@ -1,123 +1,111 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-type Zone={
- id:number;
- name:string;
+type Zone = {
+  id: number;
+  name: string;
 };
 
+const getCookie = (name: string) => {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+};
 
-export default function ZonePage(){
+const getAuthHeaders = () => {
+  const token = getCookie("token");
 
- const [zones,setZones]=useState<Zone[]>([]);
- const navigate=useNavigate();
+  return {
+    Authorization: `Bearer ${decodeURIComponent(token ?? "")}`,
+  };
+};
 
+const getZonesFromResponse = (data: unknown): Zone[] => {
+  if (Array.isArray(data)) {
+    return data;
+  }
 
- useEffect(()=>{
+  if (
+    data &&
+    typeof data === "object" &&
+    "zones" in data &&
+    Array.isArray(data.zones)
+  ) {
+    return data.zones;
+  }
 
-  fetch(
-    "http://localhost:8080/api/zones"
-  )
-  .then(r=>r.json())
-  .then(setZones)
-  .catch(console.error);
+  if (
+    data &&
+    typeof data === "object" &&
+    "data" in data &&
+    Array.isArray(data.data)
+  ) {
+    return data.data;
+  }
 
- },[]);
+  return [];
+};
 
+export default function ZonePage() {
+  const [zones, setZones] = useState<Zone[]>([]);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    fetch("http://localhost:8080/api/zones", {
+      headers: getAuthHeaders(),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки зон: ${response.status}`);
+        }
 
- const removeZone = async(id:number)=>{
+        return response.json();
+      })
+      .then((data) => {
+        setZones(getZonesFromResponse(data));
+      })
+      .catch((error) => {
+        console.error(error);
+        setZones([]);
+      });
+  }, []);
 
-  await fetch(
-    `http://localhost:8080/api/zones/${id}`,
-    {
-      method:"DELETE"
-    }
+  return (
+    <div
+      style={{
+        padding: 20,
+        background: "#f0f2f5",
+        minHeight: "100vh",
+      }}
+    >
+      <button
+        onClick={() => navigate("/admin/zones/new")}
+        style={{
+          padding: 12,
+          background: "#d21951",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          cursor: "pointer",
+        }}
+      >
+        Создать зону
+      </button>
+
+      {zones.map((zone) => (
+        <div
+          key={zone.id}
+          style={{
+            marginTop: 15,
+            background: "#fff",
+            padding: 15,
+            borderRadius: 8,
+          }}
+        >
+          {zone.name}
+        </div>
+      ))}
+    </div>
   );
-
-
-  setZones(
-    zones.filter(z=>z.id!==id)
-  );
-
- };
-
-
-
- return (
-
- <div
- style={{
-  padding:20,
-  background:"#f0f2f5",
-  minHeight:"100vh",
- }}
- >
-
- <button
- onClick={()=>navigate("/zones/create")}
- style={{
-  padding:12,
-  background:"#d21951",
-  color:"#fff",
-  border:"none",
-  borderRadius:8,
- }}
- >
- Создать зону
- </button>
-
-
-
- {
- zones.map(zone=>(
-
- <div
- key={zone.id}
- style={{
-  marginTop:15,
-  background:"#fff",
-  padding:15,
-  borderRadius:8,
- }}
- >
-
- {zone.name}
-
-
- <button
- onClick={()=>
- navigate(`/zones/${zone.id}`)
- }
- style={{
-  marginLeft:20,
- }}
- >
- Открыть
- </button>
-
-
- <button
- onClick={()=>
- removeZone(zone.id)
- }
- style={{
-  marginLeft:10,
- }}
- >
- Удалить
- </button>
-
-
- </div>
-
- ))
- }
-
-
- </div>
-
- );
-
 }

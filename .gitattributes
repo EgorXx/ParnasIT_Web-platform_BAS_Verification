@@ -1,0 +1,9 @@
+* text=auto
+
+# Shell scripts must use LF for Linux/Docker compatibility
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Batch scripts must use CRLF for Windows compatibility
+gradlew.bat text eol=crlf
+*.bat text eol=crlf

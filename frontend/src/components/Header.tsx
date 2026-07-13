@@ -1,7 +1,15 @@
 import { useNavigate } from "react-router-dom";
 
+function getCookie(name) {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+}
+
 export default function Header() {
   const navigate = useNavigate();
+  const role = getCookie("role");
 
   return (
     <header
@@ -15,17 +23,9 @@ export default function Header() {
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
-      <h2
-        style={{
-          cursor: "pointer",
-          color: "#d21951",
-          margin: 0,
-        }}
-        onClick={() => navigate("/")}
-      >
-        Route Service
-      </h2>
-
+      <button onClick={() => navigate("/")} style={buttonStyle}>
+        Главная
+      </button>
 
       <nav
         style={{
@@ -33,31 +33,33 @@ export default function Header() {
           gap: 15,
         }}
       >
-        <button
-          onClick={() => navigate("/")}
-          style={buttonStyle}
-        >
-          Главная
-        </button>
+        {!role && (
+          <button onClick={() => navigate("/login")} style={buttonStyle}>
+            Войти
+          </button>
+        )}
 
-        <button
-          onClick={() => navigate("/list")}
-          style={buttonStyle}
-        >
-          Маршруты
-        </button>
+        {role === "USER" && (
+          <button onClick={() => navigate("/list")} style={buttonStyle}>
+            Маршруты
+          </button>
+        )}
 
-        <button
-          onClick={() => navigate("/zones")}
-          style={buttonStyle}
-        >
-          Зоны
-        </button>
+        {role === "ADMIN" && (
+          <>
+            <button onClick={() => navigate("/list")} style={buttonStyle}>
+              Маршруты
+            </button>
+
+            <button onClick={() => navigate("/zones")} style={buttonStyle}>
+              Зоны
+            </button>
+          </>
+        )}
       </nav>
     </header>
   );
 }
-
 
 const buttonStyle = {
   padding: "10px 18px",

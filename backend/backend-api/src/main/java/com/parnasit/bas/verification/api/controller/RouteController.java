@@ -6,11 +6,11 @@ import com.parnasit.bas.verification.api.dto.RouteResponse;
 import com.parnasit.bas.verification.core.dto.PointSpec;
 import com.parnasit.bas.verification.core.service.RouteService;
 import com.parnasit.bas.verification.persistence.entity.Route;
+import com.parnasit.bas.verification.security.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,21 +22,22 @@ import java.util.UUID;
 public class RouteController {
 
     private final RouteService routeService;
+    private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<RouteResponse> create(@Valid @RequestBody CreateRouteRequest request) {
+    public ResponseEntity<RouteResponse> create(@RequestHeader("Authorization") String token, @Valid @RequestBody CreateRouteRequest request) {
         List<PointSpec> points = request.points().stream()
                 .map(p -> new PointSpec(p.lat(), p.lng()))
                 .toList();
 
-        UUID userId = getCurrentUserId();
+        UUID userId = authService.getMyUuid(token);
         Route route = routeService.createRoute(userId, request.name(), points);
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(route));
     }
 
     @GetMapping
-    public ResponseEntity<List<RouteResponse>> list() {
-        UUID userId = getCurrentUserId();
+    public ResponseEntity<List<RouteResponse>> list(@RequestHeader("Authorization") String token) {
+        UUID userId = authService.getMyUuid(token);
         List<RouteResponse> routes = routeService.getRoutes(userId).stream()
                 .map(this::toResponse)
                 .toList();
@@ -44,15 +45,10 @@ public class RouteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RouteResponse> get(@PathVariable UUID id) {
-        UUID userId = getCurrentUserId();
+    public ResponseEntity<RouteResponse> get(@RequestHeader("Authorization") String token, @PathVariable UUID id) {
+        UUID userId = authService.getMyUuid(token);
         Route route = routeService.getRoute(userId, id);
         return ResponseEntity.ok(toResponse(route));
-    }
-
-    private UUID getCurrentUserId() {
-        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return UUID.fromString(userId);
     }
 
     private RouteResponse toResponse(Route route) {

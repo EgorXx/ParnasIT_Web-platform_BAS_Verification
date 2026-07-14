@@ -73,7 +73,7 @@ public class RouteService {
 
     @Transactional(readOnly = true)
     public List<Route> getPendingRoutes() {
-        return routeRepository.findByAutoCheckResultFalse();
+        return routeRepository.findByAutoCheckResultFalseAndStatus(RouteStatus.SUBMITTED);
     }
 
     @Transactional

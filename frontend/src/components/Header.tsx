@@ -40,18 +40,18 @@ export default function Header() {
         )}
 
         {role === "USER" && (
-          <button onClick={() => navigate("/list")} style={buttonStyle}>
+          <button onClick={() => navigate("/routes")} style={buttonStyle}>
             Маршруты
           </button>
         )}
 
         {role === "ADMIN" && (
           <>
-            <button onClick={() => navigate("/list")} style={buttonStyle}>
-              Маршруты
+            <button onClick={() => navigate("/admin/pending ")} style={buttonStyle}>
+              Маршруты на рассмотрение
             </button>
 
-            <button onClick={() => navigate("/zones")} style={buttonStyle}>
+            <button onClick={() => navigate("/admin/zones")} style={buttonStyle}>
               Зоны
             </button>
           </>

@@ -30,6 +30,12 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
+const getCookie = (name: string) => {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+};
 
 function MapClickHandler({
   drawing,
@@ -88,12 +94,15 @@ const saveDraft = async () => {
   };
 
   try {
+    const token = getCookie("token");
+
     const response = await fetch(
       "http://localhost:8080/api/routes",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${decodeURIComponent(token ?? "")}`,
         },
         body: JSON.stringify(route),
       }
@@ -105,7 +114,7 @@ const saveDraft = async () => {
       );
     }
 
-    navigate("/list");
+    navigate("/routes");
   } catch (error) {
     console.error(error);
     alert("Не удалось сохранить маршрут");
@@ -201,20 +210,6 @@ const saveDraft = async () => {
   }}
 >
   <button
-    onClick={() => navigate("/list")}
-    style={{
-      padding: "12px 24px",
-      borderRadius: 8,
-      border: "1px solid #777",
-      background: "#fff",
-      color: "#333",
-      cursor: "pointer",
-    }}
-  >
-    К списку
-  </button>
-
-  <button
     onClick={saveDraft}
     style={{
       padding: "12px 24px",
@@ -225,21 +220,7 @@ const saveDraft = async () => {
       cursor: "pointer",
     }}
   >
-    Сохранить черновик
-  </button>
-
-  <button
-    onClick={() => setDrawing(false)}
-    style={{
-      padding: "12px 24px",
-      borderRadius: 8,
-      border: "none",
-      background: "#d21951",
-      color: "#fff",
-      cursor: "pointer",
-    }}
-  >
-    Завершить маршрут
+    Отправить
   </button>
 </div>
 

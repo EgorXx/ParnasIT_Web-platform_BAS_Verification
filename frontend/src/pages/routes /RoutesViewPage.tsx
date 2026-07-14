@@ -33,6 +33,13 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
+const getCookie = (name: string) => {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+};
+
 export default function RouteViewPage() {
     const navigate = useNavigate();
   const { id } = useParams();
@@ -41,10 +48,17 @@ export default function RouteViewPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = getCookie("token");
+
     const fetchRoute = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/routes/${id}`
+          `http://localhost:8080/api/routes/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${decodeURIComponent(token ?? "")}`,
+            },
+          }
         );
 
         if (!response.ok) {

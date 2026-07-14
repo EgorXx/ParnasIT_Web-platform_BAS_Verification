@@ -5,11 +5,14 @@ import com.parnasit.bas.verification.persistence.enums.UserRole;
 import com.parnasit.bas.verification.persistence.repository.UserRepository;
 import com.parnasit.bas.verification.security.dto.LoginResult;
 import com.parnasit.bas.verification.security.jwt.JwtProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +48,20 @@ public class AuthService {
         String token = jwtProvider.generate(user.getId(), user.getEmail(), user.getRole());
 
         return new LoginResult(token, user.getRole().name());
+    }
+
+    public UUID getMyUuid(String token) {
+        token = token.trim();
+
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+
+        Claims claims = jwtProvider.validate(token);
+        return UUID.fromString(claims.getSubject());
     }
 }

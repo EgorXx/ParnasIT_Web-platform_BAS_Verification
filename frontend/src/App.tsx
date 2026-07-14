@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 
-import RoutePage from "./pages/RoutePage";
-import ListPage from "./pages/ListPage";
-import RouteViewPage from "./pages/RouteViewPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import RoutePage from "./pages/routes /RoutesNewPage";
+import ListPage from "./pages/routes /RoutesListPage";
+import RouteViewPage from "./pages/routes /RoutesViewPage";
+import RoutesApprovePage from "./pages/routes /RoutesApprovePage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import ZonePage from "./pages/ZonePage";
-import ZoneCreatePage from "./pages/ZoneCreatePage";
-import ZoneViewPage from "./pages/ZoneViewPage";
+import ZonePage from "./pages/zones/ZonesListPage";
+import ZoneCreatePage from "./pages/zones/ZonesNewPage";
 import AdminRoute from "./components/AdminRoute";
 import HomePage from "./pages/HomePage";
 import Layout from "./Layout";
@@ -44,7 +44,7 @@ export default function App() {
 
 
         <Route
-          path="/route"
+          path="/routes/new"
           element={
             <ProtectedRoute>
               <RoutePage />
@@ -54,7 +54,7 @@ export default function App() {
 
 
         <Route
-          path="/list"
+          path="/routes"
           element={
             <ProtectedRoute>
               <ListPage />
@@ -64,7 +64,7 @@ export default function App() {
 
 
         <Route
-          path="/route/:id"
+          path="/routes/:id"
           element={
             <ProtectedRoute>
               <RouteViewPage />
@@ -75,7 +75,7 @@ export default function App() {
 
 
         <Route
-          path="/zones"
+          path="/admin/zones"
           element={
             <AdminRoute>
               <ZonePage />
@@ -85,7 +85,7 @@ export default function App() {
 
 
         <Route
-          path="/zones/create"
+          path="/admin/zones/new"
           element={
             <AdminRoute>
               <ZoneCreatePage />
@@ -95,10 +95,10 @@ export default function App() {
 
 
         <Route
-          path="/zones/:id"
+          path="/admin/pending"
           element={
             <AdminRoute>
-              <ZoneViewPage />
+              <RoutesApprovePage />
             </AdminRoute>
           }
         />

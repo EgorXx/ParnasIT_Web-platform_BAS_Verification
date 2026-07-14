@@ -2,23 +2,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
 
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
 
-  const login = async () => {
+  const register = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/api/auth/login",
+        "http://localhost:8080/api/auth/register",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            fullName,
             email,
             password,
           }),
@@ -26,37 +28,15 @@ export default function LoginPage() {
       );
 
 
-      if (!response.ok) {
-        throw new Error("Ошибка входа");
+      if (!response.ok || response.status !== 201) {
+        throw new Error(response.status.toString());
       }
 
-
-      const data = await response.json();
-
-
-      Cookies.set(
-        "token",
-        data.token,
-        {
-          expires: 7,
-        }
-      );
-
-
-      Cookies.set(
-        "role",
-        data.role,
-        {
-          expires: 7,
-        }
-      );
-
-
-      navigate("/list");
+      navigate("/login");
 
     } catch (error) {
       console.error(error);
-      alert("Неверный email или пароль");
+      alert("Не удалось зарегистрироваться");
     }
   };
 
@@ -80,7 +60,19 @@ export default function LoginPage() {
         }}
       >
 
-        <h2>Вход</h2>
+        <h2>Регистрация</h2>
+
+
+        <input
+          placeholder="ФИО"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          style={{
+            width: "100%",
+            marginBottom: 12,
+            padding: 10,
+          }}
+        />
 
 
         <input
@@ -109,7 +101,7 @@ export default function LoginPage() {
 
 
         <button
-          onClick={login}
+          onClick={register}
           style={{
             width: "100%",
             padding: 12,
@@ -117,14 +109,15 @@ export default function LoginPage() {
             color: "#fff",
             border: "none",
             borderRadius: 8,
+            cursor: "pointer",
           }}
         >
-          Войти
+          Создать аккаунт
         </button>
 
 
         <button
-          onClick={() => navigate("/register")}
+          onClick={() => navigate("/login")}
           style={{
             marginTop: 10,
             width: "100%",
@@ -133,9 +126,10 @@ export default function LoginPage() {
             color: "#d21951",
             border: "1px solid #d21951",
             borderRadius: 8,
+            cursor: "pointer",
           }}
         >
-          Регистрация
+          Уже есть аккаунт
         </button>
 
       </div>

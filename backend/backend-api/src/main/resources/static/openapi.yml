@@ -158,6 +158,24 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
 
+  /api/admin/routes:
+    get:
+      tags: [Admin]
+      summary: Список всех заявок
+      responses:
+        "200":
+          description: Список всех заявок
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RouteResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
   /api/admin/routes/pending:
     get:
       tags: [Admin]
@@ -328,6 +346,8 @@ components:
         status:
           type: string
           enum: [SUBMITTED, APPROVED, REJECTED]
+        autoCheckResult:
+          type: boolean
         createdAt:
           type: string
           format: date-time

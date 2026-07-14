@@ -18,6 +18,14 @@ public class AdminRouteController {
 
     private final RouteService routeService;
 
+    @GetMapping
+    public ResponseEntity<List<RouteResponse>> all() {
+        List<RouteResponse> routes = routeService.getAllRoutes().stream()
+                .map(this::toResponse)
+                .toList();
+        return ResponseEntity.ok(routes);
+    }
+
     @GetMapping("/pending")
     public ResponseEntity<List<RouteResponse>> pending() {
         List<RouteResponse> routes = routeService.getPendingRoutes().stream()
@@ -47,6 +55,7 @@ public class AdminRouteController {
                 route.getName(),
                 route.getUser().getFullName(),
                 route.getStatus().name(),
+                route.isAutoCheckResult(),
                 route.getCreatedAt(),
                 points
         );

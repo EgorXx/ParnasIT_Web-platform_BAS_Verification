@@ -76,6 +76,11 @@ public class RouteService {
         return routeRepository.findByAutoCheckResultFalseAndStatus(RouteStatus.SUBMITTED);
     }
 
+    @Transactional(readOnly = true)
+    public List<Route> getAllRoutes() {
+        return routeRepository.findAll();
+    }
+
     @Transactional
     public Route approveRoute(UUID routeId) {
         Route route = routeRepository.findById(routeId)

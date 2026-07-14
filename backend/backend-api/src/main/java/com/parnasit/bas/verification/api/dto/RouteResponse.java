@@ -9,6 +9,7 @@ public record RouteResponse(
         String name,
         String userFullName,
         String status,
+        boolean autoCheckResult,
         Instant createdAt,
         List<Coordinate> points
 ) {}

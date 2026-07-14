@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type RouteStatus = "SUBMITTED" | "APPROVED" | "REJECTED";
 
+type RoutePoint = {
+  lat: number;
+  lng: number;
+};
+
 type Route = {
   id: string;
   name: string;
+  userFullName: string;
   status: RouteStatus;
+  createdAt: string;
+  points: RoutePoint[];
 };
 
 const getCookie = (name: string) => {
@@ -23,6 +31,14 @@ const getAuthHeaders = () => {
     Authorization: `Bearer ${decodeURIComponent(token ?? "")}`,
   };
 };
+
+const statusLabels: Record<RouteStatus, string> = {
+  SUBMITTED: "На рассмотрении",
+  APPROVED: "Одобренные",
+  REJECTED: "Отклоненные",
+};
+
+const statusOrder: RouteStatus[] = ["SUBMITTED", "APPROVED", "REJECTED"];
 
 export default function RoutesApprovePage() {
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -41,13 +57,10 @@ export default function RoutesApprovePage() {
         );
 
         if (!response.ok) {
-          throw new Error(
-            `Ошибка загрузки маршрутов: ${response.status}`
-          );
+          throw new Error(`Ошибка загрузки маршрутов: ${response.status}`);
         }
 
         const data: Route[] = await response.json();
-
         setRoutes(data);
       } catch (error) {
         console.error(error);
@@ -58,6 +71,20 @@ export default function RoutesApprovePage() {
 
     fetchRoutes();
   }, []);
+
+  const routesByStatus = useMemo(() => {
+    return statusOrder.reduce<Record<RouteStatus, Route[]>>(
+      (acc, status) => {
+        acc[status] = routes.filter((route) => route.status === status);
+        return acc;
+      },
+      {
+        SUBMITTED: [],
+        APPROVED: [],
+        REJECTED: [],
+      }
+    );
+  }, [routes]);
 
   const handleRouteAction = async (
     id: string,
@@ -75,13 +102,16 @@ export default function RoutesApprovePage() {
       );
 
       if (!response.ok) {
-        throw new Error(
-          `Ошибка обработки маршрута: ${response.status}`
-        );
+        throw new Error(`Ошибка обработки маршрута: ${response.status}`);
       }
 
+      const nextStatus: RouteStatus =
+        action === "approve" ? "APPROVED" : "REJECTED";
+
       setRoutes((prev) =>
-        prev.filter((route) => route.id !== id)
+        prev.map((route) =>
+          route.id === id ? { ...route, status: nextStatus } : route
+        )
       );
     } catch (error) {
       console.error(error);
@@ -105,98 +135,121 @@ export default function RoutesApprovePage() {
         <div
           style={{
             display: "flex",
-            gap: "12px",
-            marginBottom: "20px",
-            flexWrap: "wrap",
+            flexDirection: "column",
+            gap: "24px",
           }}
         >
-          {routes.map((route) => (
-            <div
-              key={route.id}
-              style={{
-                padding: "12px 24px",
-                borderRadius: "8px",
-                background: "#fff",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: "10px",
-              }}
-            >
-              <span>{route.name}</span>
+          {statusOrder.map((status) => (
+            <section key={status}>
+              <h2 style={{ marginBottom: "12px" }}>
+                {statusLabels[status]}
+              </h2>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                }}
-              >
-                <button
-                  onClick={() =>
-                    navigate(`/admin/pending/route/${route.id}`)
-                  }
+              {routesByStatus[status].length === 0 ? (
+                <div>Заявок нет</div>
+              ) : (
+                <div
                   style={{
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "none",
-                    background: "#6c757d",
-                    color: "#fff",
-                    cursor: "pointer",
+                    display: "flex",
+                    gap: "12px",
+                    flexWrap: "wrap",
                   }}
                 >
-                  Посмотреть
-                </button>
+                  {routesByStatus[status].map((route) => (
+                    <div
+                      key={route.id}
+                      style={{
+                        padding: "12px 24px",
+                        borderRadius: "8px",
+                        background: "#fff",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        gap: "10px",
+                      }}
+                    >
+                      <span><strong>{route.name}</strong></span>
+                      <span>{route.userFullName}</span>
 
-                <button
-                  onClick={() =>
-                    handleRouteAction(route.id, "approve")
-                  }
-                  disabled={processingId === route.id}
-                  style={{
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "none",
-                    background: "#28a745",
-                    color: "#fff",
-                    cursor:
-                      processingId === route.id
-                        ? "not-allowed"
-                        : "pointer",
-                    opacity: processingId === route.id ? 0.6 : 1,
-                  }}
-                >
-                  Одобрить
-                </button>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/pending/route/${route.id}`)
+                          }
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "6px",
+                            border: "none",
+                            background: "#6c757d",
+                            color: "#fff",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Посмотреть
+                        </button>
 
-                <button
-                  onClick={() =>
-                    handleRouteAction(route.id, "reject")
-                  }
-                  disabled={processingId === route.id}
-                  style={{
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "none",
-                    background: "#dc3545",
-                    color: "#fff",
-                    cursor:
-                      processingId === route.id
-                        ? "not-allowed"
-                        : "pointer",
-                    opacity: processingId === route.id ? 0.6 : 1,
-                  }}
-                >
-                  Отклонить
-                </button>
-              </div>
-            </div>
+                        {route.status === "SUBMITTED" && (
+                          <>
+                            <button
+                              onClick={() =>
+                                handleRouteAction(route.id, "approve")
+                              }
+                              disabled={processingId === route.id}
+                              style={{
+                                padding: "8px 12px",
+                                borderRadius: "6px",
+                                border: "none",
+                                background: "#28a745",
+                                color: "#fff",
+                                cursor:
+                                  processingId === route.id
+                                    ? "not-allowed"
+                                    : "pointer",
+                                opacity: processingId === route.id ? 0.6 : 1,
+                              }}
+                            >
+                              Одобрить
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                handleRouteAction(route.id, "reject")
+                              }
+                              disabled={processingId === route.id}
+                              style={{
+                                padding: "8px 12px",
+                                borderRadius: "6px",
+                                border: "none",
+                                background: "#dc3545",
+                                color: "#fff",
+                                cursor:
+                                  processingId === route.id
+                                    ? "not-allowed"
+                                    : "pointer",
+                                opacity: processingId === route.id ? 0.6 : 1,
+                              }}
+                            >
+                              Отклонить
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
           ))}
         </div>
       )}
 
-      {!loading && routes.length === 0 && (
-        <div>Маршрутов нет</div>
-      )}
+      {!loading && routes.length === 0 && <div>Маршрутов нет</div>}
     </div>
   );
 }

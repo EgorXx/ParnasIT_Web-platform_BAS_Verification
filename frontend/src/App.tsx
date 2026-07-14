@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 
-import RoutePage from "./pages/routes /RoutesNewPage";
-import ListPage from "./pages/routes /RoutesListPage";
-import RouteViewPage from "./pages/routes /RoutesViewPage";
-import RoutesApproveListPage from "./pages/routes /RoutesListApprovePage";
-import RoutesApprovePage from "./pages/routes /RoutesViewApprovePage";
+import RoutePage from "./pages/routes/RoutesNewPage";
+import ListPage from "./pages/routes/RoutesListPage";
+import RouteViewPage from "./pages/routes/RoutesViewPage";
+import RoutesApproveListPage from "./pages/routes/RoutesListApprovePage";
+import RoutesApprovePage from "./pages/routes/RoutesViewApprovePage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";

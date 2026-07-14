@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type RouteStatus = "SUBMITTED" | "APPROVED" | "REJECTED";
 
@@ -27,6 +28,7 @@ export default function RoutesApprovePage() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -129,6 +131,22 @@ export default function RoutesApprovePage() {
                   gap: "8px",
                 }}
               >
+                <button
+                  onClick={() =>
+                    navigate(`/admin/pending/route/${route.id}`)
+                  }
+                  style={{
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    border: "none",
+                    background: "#6c757d",
+                    color: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  Посмотреть
+                </button>
+
                 <button
                   onClick={() =>
                     handleRouteAction(route.id, "approve")

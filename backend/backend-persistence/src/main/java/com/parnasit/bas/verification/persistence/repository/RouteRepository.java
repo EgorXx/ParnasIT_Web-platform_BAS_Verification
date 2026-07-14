@@ -13,7 +13,7 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
     List<Route> findByUserId(UUID userId);
 
     @EntityGraph(attributePaths = {"points", "user"})
-    List<Route> findByAutoCheckResultFalse();
+    List<Route> findByAutoCheckResultFalseAndStatus(com.parnasit.bas.verification.persistence.enums.RouteStatus status);
 
     @Override
     @EntityGraph(attributePaths = {"points", "user"})

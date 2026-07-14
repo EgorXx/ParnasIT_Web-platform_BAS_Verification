@@ -60,6 +60,7 @@ public class RouteController {
                 route.getName(),
                 route.getUser().getFullName(),
                 route.getStatus().name(),
+                route.isAutoCheckResult(),
                 route.getCreatedAt(),
                 points
         );

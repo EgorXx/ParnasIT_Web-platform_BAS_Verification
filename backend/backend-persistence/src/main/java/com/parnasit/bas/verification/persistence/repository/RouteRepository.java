@@ -17,5 +17,9 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
 
     @Override
     @EntityGraph(attributePaths = {"points", "user"})
+    List<Route> findAll();
+
+    @Override
+    @EntityGraph(attributePaths = {"points", "user"})
     Optional<Route> findById(UUID id);
 }

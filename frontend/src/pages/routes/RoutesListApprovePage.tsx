@@ -13,8 +13,15 @@ type Route = {
   name: string;
   userFullName: string;
   status: RouteStatus;
+  autoCheckResult: boolean;
   createdAt: string;
   points: RoutePoint[];
+};
+
+type RouteBlock = {
+  key: string;
+  title: string;
+  routes: Route[];
 };
 
 const getCookie = (name: string) => {
@@ -32,14 +39,6 @@ const getAuthHeaders = () => {
   };
 };
 
-const statusLabels: Record<RouteStatus, string> = {
-  SUBMITTED: "На рассмотрении",
-  APPROVED: "Одобренные",
-  REJECTED: "Отклоненные",
-};
-
-const statusOrder: RouteStatus[] = ["SUBMITTED", "APPROVED", "REJECTED"];
-
 export default function RoutesApprovePage() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +49,7 @@ export default function RoutesApprovePage() {
     const fetchRoutes = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/admin/routes/pending",
+          "http://localhost:8080/api/admin/routes",
           {
             headers: getAuthHeaders(),
           }
@@ -72,18 +71,35 @@ export default function RoutesApprovePage() {
     fetchRoutes();
   }, []);
 
-  const routesByStatus = useMemo(() => {
-    return statusOrder.reduce<Record<RouteStatus, Route[]>>(
-      (acc, status) => {
-        acc[status] = routes.filter((route) => route.status === status);
-        return acc;
+  const routeBlocks = useMemo<RouteBlock[]>(() => {
+    return [
+      {
+        key: "submitted",
+        title: "На рассмотрении",
+        routes: routes.filter((route) => route.status === "SUBMITTED"),
       },
       {
-        SUBMITTED: [],
-        APPROVED: [],
-        REJECTED: [],
-      }
-    );
+        key: "approved-auto",
+        title: "Автоматически одобренные",
+        routes: routes.filter(
+          (route) =>
+            route.status === "APPROVED" && route.autoCheckResult === true
+        ),
+      },
+      {
+        key: "approved-manual",
+        title: "Одобренные вручную",
+        routes: routes.filter(
+          (route) =>
+            route.status === "APPROVED" && route.autoCheckResult !== true
+        ),
+      },
+      {
+        key: "rejected",
+        title: "Отклоненные",
+        routes: routes.filter((route) => route.status === "REJECTED"),
+      },
+    ];
   }, [routes]);
 
   const handleRouteAction = async (
@@ -110,7 +126,13 @@ export default function RoutesApprovePage() {
 
       setRoutes((prev) =>
         prev.map((route) =>
-          route.id === id ? { ...route, status: nextStatus } : route
+          route.id === id
+            ? {
+                ...route,
+                status: nextStatus,
+                autoCheckResult: false,
+              }
+            : route
         )
       );
     } catch (error) {
@@ -139,13 +161,11 @@ export default function RoutesApprovePage() {
             gap: "24px",
           }}
         >
-          {statusOrder.map((status) => (
-            <section key={status}>
-              <h2 style={{ marginBottom: "12px" }}>
-                {statusLabels[status]}
-              </h2>
+          {routeBlocks.map((block) => (
+            <section key={block.key}>
+              <h2 style={{ marginBottom: "12px" }}>{block.title}</h2>
 
-              {routesByStatus[status].length === 0 ? (
+              {block.routes.length === 0 ? (
                 <div>Заявок нет</div>
               ) : (
                 <div
@@ -155,7 +175,7 @@ export default function RoutesApprovePage() {
                     flexWrap: "wrap",
                   }}
                 >
-                  {routesByStatus[status].map((route) => (
+                  {block.routes.map((route) => (
                     <div
                       key={route.id}
                       style={{

@@ -234,7 +234,7 @@ export default function RoutesViewApprovePage() {
         </div>
 
         <div>
-          Запретных зон: {zones.length}
+          Разрешенных зон: {zones.length}
         </div>
       </div>
 
